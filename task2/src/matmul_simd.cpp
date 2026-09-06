@@ -25,7 +25,7 @@ static inline float hsum256_ps(__m256 v) {
 void matmul_simd(const float* A, const float* B, float* C,
                  int M, int N, int K, int lda, int ldb, int ldc) {
     // TODO(student): replace this placeholder with your register-tiled AVX2 implementation.
-    bool FLAG_128 = true;
+    bool FLAG_128 = false;
     for (int i = 0; i < M; ++i) {
         const float* a = A + static_cast<long>(i) * lda;
         for (int j = 0; j < N; ++j) {
