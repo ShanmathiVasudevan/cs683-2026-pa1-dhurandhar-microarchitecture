@@ -5,5 +5,34 @@
 void conv_tile(const float* in, float* out, const float* ker,
                int H, int W, int K) {
     // TODO(student): replace this placeholder with your tiled/blocked implementation.
-    conv_naive(in, out, ker, H, W, K);
+    const int p = K / 2;
+    const int in_stride = W + 2 * p;
+ 
+    const int TILE_H = 100;
+    const int TILE_W = 100;
+ 
+    for (int oy0 = 0; oy0 < H; oy0 += TILE_H) {
+        int oy_end = oy0 + TILE_H;
+        if (oy_end > H) oy_end = H;
+ 
+        for (int ox0 = 0; ox0 < W; ox0 += TILE_W) {
+            int ox_end = ox0 + TILE_W;
+            if (ox_end > W) ox_end = W;
+ 
+            for (int oy = oy0; oy < oy_end; ++oy) {
+                for (int ox = ox0; ox < ox_end; ++ox) {
+                    float acc = 0.0f;
+                    for (int ky = 0; ky < K; ++ky) {
+                        const float* row_in  = in + (oy + ky) * in_stride + ox;
+                        const float* row_ker = ker + ky * K;
+                        for (int kx = 0; kx < K; ++kx) {
+                            acc += row_in[kx] * row_ker[kx];
+                        }
+                    }
+                    out[oy * W + ox] = acc;
+                }
+            }
+        }
+    }
+    
 }
